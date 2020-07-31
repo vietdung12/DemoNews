@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\News.Api\News.Api.csproj" />
+    <ProjectReference Include="..\News.ViewModel\News.ViewModel.csproj" />
+  </ItemGroup>
+
+
+
+</Project>
