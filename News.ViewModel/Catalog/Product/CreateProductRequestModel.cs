@@ -15,5 +15,12 @@ namespace News.ViewModel.Catalog.Product
         public string Description { get; set; }
         [Display(Name = "Giá bán")]
         public string Price { get; set; }
+        [Display(Name = "Ngày tạo")]
+        public DateTime DateCreated { get; set; }
+
+        public CreateProductRequestModel()
+        {
+            DateCreated = DateTime.Now;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using News.Data.Entities;
 using News.ViewModel.Catalog.Product;
+using News.ViewModel.Catalog.Register;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace News.Api.Profiles
             CreateMap<Product, ProductViewModel>();
             CreateMap<CreateProductRequestModel, Product>();
             CreateMap<UpdateProductRequestModel, Product>();
+
+            CreateMap<Register, RegisterViewModel>();
+            CreateMap<CreateRegisterRequest, Register>();            
         }
     }
 }

@@ -58,9 +58,7 @@ namespace News.Admin.Service
 
             var response = await client.GetAsync($"/api/News");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<ProductViewModel>>(result);
-
-            
+            return JsonConvert.DeserializeObject<IEnumerable<ProductViewModel>>(result);           
         }
 
         public async Task<ProductViewModel> GetProductById(int id)
@@ -69,11 +67,8 @@ namespace News.Admin.Service
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
 
             var response = await client.GetAsync($"/api/News/{id}");
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ProductViewModel>(result);
-
-            return JsonConvert.DeserializeObject<ProductViewModel>(result);
+            var result = await response.Content.ReadAsStringAsync();          
+            return JsonConvert.DeserializeObject<ProductViewModel>(result);            
         }
 
         public async Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro)

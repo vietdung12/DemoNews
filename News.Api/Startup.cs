@@ -30,7 +30,9 @@ namespace News.Api
             services.AddDbContext<NewsDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("NewsDbConnection")));
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IRegisterService, RegisterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

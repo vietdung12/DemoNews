@@ -14,10 +14,6 @@ namespace News.Data.Entities
         public DateTime DateCreated { get; set; }
         public bool Status { get; set; }
         public List<Image> Images { get; set; }
-
-        public Product()
-        {
-            DateCreated = DateTime.Now;
-        }
+       
     }
 }

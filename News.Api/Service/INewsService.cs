@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using News.Data.Entities;
+using News.ViewModel.Catalog.Product;
 using News.ViewModel.Common;
 
 namespace News.Api.Service

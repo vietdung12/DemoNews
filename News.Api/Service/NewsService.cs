@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using News.Data.EF;
 using News.Data.Entities;
+using News.ViewModel.Catalog.Product;
 using News.ViewModel.Common;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace News.Api.Service
         {
            if(pro == null)
            {
-                return new ApiErrorResult<bool>("SP không tồn tại");
+                return new ApiErrorResult<bool>("Bản ghi không tồn tại");
            }
              _context.Products.Add(pro);
              await _context.SaveChangesAsync();
@@ -34,7 +35,7 @@ namespace News.Api.Service
         {
             if(pro == null)
             {
-                return new ApiErrorResult<bool>("SP không tồn tại");
+                return new ApiErrorResult<bool>("Bản ghi không tồn tại");
             }
              _context.Products.Remove(pro);
             await _context.SaveChangesAsync();
@@ -57,7 +58,7 @@ namespace News.Api.Service
         {
             if (pro == null)
             {
-                return new ApiErrorResult<bool>("SP không tồn tại");
+                return new ApiErrorResult<bool>("Bản ghi không tồn tại");
             }
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
