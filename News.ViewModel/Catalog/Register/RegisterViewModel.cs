@@ -10,6 +10,7 @@ namespace News.ViewModel.Catalog.Register
         public string Name { get; set; }
         public string Email { get; set; }
         public int Telephone { get; set; }
+        public int IdProduct { get; set; }
         public DateTime DateCreated { get; set; }
     }
 }

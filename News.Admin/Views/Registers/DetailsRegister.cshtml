@@ -1,4 +1,4 @@
-﻿@model News.ViewModel.Catalog.Product.ProductViewModel
+﻿@model News.ViewModel.Catalog.Register.RegisterViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,7 +8,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>ProductViewModel</h4>
+    <h4>RegisterViewModel</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,28 +18,22 @@
             @Html.DisplayFor(model => model.Id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Local)
+            @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Local)
+            @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Telephone)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.Telephone)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DateCreated)
@@ -47,15 +41,8 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DateCreated)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+<div>   
     <a asp-action="Index">Back to List</a>
 </div>

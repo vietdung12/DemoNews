@@ -16,7 +16,8 @@ namespace News.Data.Configurations
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Email).HasMaxLength(200);
-            builder.Property(x => x.Telephone).HasMaxLength(200);
+            builder.Property(x => x.Telephone).IsRequired().HasMaxLength(200);
+            builder.Property(x => x.IdProduct);
             builder.Property(x => x.DateCreated).IsRequired();
         }
     }

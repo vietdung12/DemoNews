@@ -103,23 +103,23 @@ namespace News.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            return View(new DeleteProductRequsetModel()
+            return View(new DeleteProductRequestModel()
             {
                 Id = id
             });
         }
 
         [HttpPost]        
-        public async Task<IActionResult> Delete(DeleteProductRequsetModel request)
+        public async Task<IActionResult> Delete(DeleteProductRequestModel request)
         {
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.DeleteProduct(request.Id);
+            var result = await _productApiClient.DeleteProduct(request);
             if (result.IsSuccessed)
             {
                 //thông báo Action result cho trang Index
-                TempData["result"] = "Xóa người dùng thành công";
+                TempData["result"] = "Xóa thành công";
 
                 return RedirectToAction("Index");
             }

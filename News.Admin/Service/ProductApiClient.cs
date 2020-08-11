@@ -38,12 +38,12 @@ namespace News.Admin.Service
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<ApiResult<bool>> DeleteProduct(int id)
+        public async Task<ApiResult<bool>> DeleteProduct(DeleteProductRequestModel pro)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);           
 
-            var response = await client.DeleteAsync($"/api/News/{id}");
+            var response = await client.DeleteAsync($"/api/News/{pro.Id}");
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);

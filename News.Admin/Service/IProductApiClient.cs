@@ -13,6 +13,6 @@ namespace News.Admin.Service
         Task<ProductViewModel> GetProductById(int id);
         Task<ApiResult<bool>> CreateProduct(CreateProductRequestModel pro);
         Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro);
-        Task<ApiResult<bool>> DeleteProduct(int id);
+        Task<ApiResult<bool>> DeleteProduct(DeleteProductRequestModel pro);
     }
 }
