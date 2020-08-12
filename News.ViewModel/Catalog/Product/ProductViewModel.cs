@@ -18,6 +18,7 @@ namespace News.ViewModel.Catalog.Product
         [Display(Name = "Giá bán")]
         public string Price { get; set; }
         [Display(Name = "Ngày tạo")]
+        [DataType(DataType.Date)]
         public DateTime DateCreated { get; set; }
         [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
