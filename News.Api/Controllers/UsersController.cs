@@ -39,7 +39,7 @@ namespace News.Api.Controllers
             
         }
 
-        [HttpPost]
+        [HttpPost]       
         public async Task<IActionResult> Register(UserRegisterRequest request)
         {
             if (!ModelState.IsValid)
@@ -68,7 +68,7 @@ namespace News.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteUser(id);
             return Ok(result);

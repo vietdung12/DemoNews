@@ -22,12 +22,13 @@ namespace News.ViewModel.System.User
             .Matches(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").WithMessage("Email format is not correct");
 
             RuleFor(x => x.UserName).NotEmpty().WithMessage("User is required");
+
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required")
                 .MinimumLength(8).WithMessage("Password need to be greater than 8 characters")
                 .Matches("[A-Z]").WithMessage("Password need at least 1 Uppercase letter")
                 .Matches("[^a-zA-Z0-9]").WithMessage("Password needs at least 1 special character");
 
-            RuleFor(x => x.UserName).NotEmpty().WithMessage("User is required");
+            RuleFor(x => x.ConfirmPassword).NotEmpty().WithMessage("User is required");
 
             RuleFor(x => x).Custom((x, context) =>
             {

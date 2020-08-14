@@ -66,7 +66,7 @@ namespace News.Api.Service
 
             return userVm;
         }
-
+       
         public async Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
@@ -86,7 +86,7 @@ namespace News.Api.Service
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.UserName,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber.ToString()
             };
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
@@ -107,7 +107,7 @@ namespace News.Api.Service
             user.Email = request.Email;
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.PhoneNumber = request.PhoneNumber;
+            user.PhoneNumber = request.PhoneNumber.ToString();
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)

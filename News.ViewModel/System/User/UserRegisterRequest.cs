@@ -16,8 +16,8 @@ namespace News.ViewModel.System.User
         public DateTime DoB { get; set; }
         [Display(Name = "Email")]
         public string Email { get; set; }
-        [Display(Name = "Số điện thoại")]
-        public string PhoneNumber { get; set; }
+        [Display(Name = "Số điện thoại")]        
+        public int PhoneNumber { get; set; }
         [Display(Name = "Tên tài khoản")]
         public string UserName { get; set; }
         [Display(Name = "Mật khẩu")]

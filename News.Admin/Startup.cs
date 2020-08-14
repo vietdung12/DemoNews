@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using News.Admin.Service;
 using News.ViewModel.Catalog.Product;
+using News.ViewModel.System.User;
 
 namespace News.Admin
 {
@@ -27,9 +29,13 @@ namespace News.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateProductRequestValidator>());
+            services.AddControllersWithViews().AddFluentValidation();
+            services.AddTransient<IValidator<CreateProductRequestModel>, CreateProductRequestValidator>();
+            services.AddTransient<IValidator<UserRegisterRequest>, UserRegisterValidator>();
+
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<IRegisterApiClient, RegisterApiClient>();
+            services.AddTransient<IUserApiClient, UserApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

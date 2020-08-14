@@ -16,6 +16,7 @@ namespace News.Admin.Controllers
         {
             _productApiClient = productApiClient;
         }
+
         public async Task<IActionResult> Index()
         {
             var data = await _productApiClient.GetAllProduct();

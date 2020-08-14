@@ -23,6 +23,6 @@ namespace News.ViewModel.System.User
         public string Email { get; set; }
 
         [Display(Name = "Số điện thoại")]
-        public string PhoneNumber { get; set; }
+        public int PhoneNumber { get; set; }
     }
 }
