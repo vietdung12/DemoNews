@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using News.Api.Service;
@@ -11,6 +12,7 @@ namespace News.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -18,6 +20,21 @@ namespace News.Api.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpPost("authenticate")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Authenticate(LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Authencate(request);
+            if (string.IsNullOrEmpty(result.ResultObj))
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         [HttpGet]
@@ -39,7 +56,8 @@ namespace News.Api.Controllers
             
         }
 
-        [HttpPost]       
+        [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(UserRegisterRequest request)
         {
             if (!ModelState.IsValid)

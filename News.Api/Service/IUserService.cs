@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace News.Api.Service
 {
     public interface IUserService
-    {    
+    {
+        Task<ApiResult<string>> Authencate(LoginRequest request);
         Task<IEnumerable<UserVM>> GetAllUsers();
         Task<UserVM> GetUserById(Guid id);
         Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request);

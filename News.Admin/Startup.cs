@@ -32,6 +32,7 @@ namespace News.Admin
             services.AddControllersWithViews().AddFluentValidation();
             services.AddTransient<IValidator<CreateProductRequestModel>, CreateProductRequestValidator>();
             services.AddTransient<IValidator<UserRegisterRequest>, UserRegisterValidator>();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
 
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<IRegisterApiClient, RegisterApiClient>();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using News.Api.Service;
@@ -14,6 +15,7 @@ namespace News.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegistersController : ControllerBase
     {
         private readonly IRegisterService _registerService;
@@ -46,6 +48,7 @@ namespace News.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<ApiResult<RegisterViewModel>>> Create(CreateRegisterRequest request)
         {
             var itemModel = _mapper.Map<Register>(request);
