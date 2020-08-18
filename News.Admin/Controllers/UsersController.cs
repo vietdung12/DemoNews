@@ -8,7 +8,7 @@ using News.ViewModel.System.User;
 
 namespace News.Admin.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
 

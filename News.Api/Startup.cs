@@ -41,6 +41,7 @@ namespace News.Api
             services.AddScoped<IRegisterService, RegisterService>();
 
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
+            services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddScoped<IUserService, UserService>();
 
             string issuer = Configuration.GetValue<string>("Tokens:Issuer");
@@ -90,7 +91,7 @@ namespace News.Api
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthorization();            
 
             app.UseEndpoints(endpoints =>
             {

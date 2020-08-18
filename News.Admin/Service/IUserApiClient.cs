@@ -9,6 +9,7 @@ namespace News.Admin.Service
 {
     public interface IUserApiClient
     {
+        Task<ApiResult<string>> Authenticate(LoginRequest request);
         Task<IEnumerable<UserVM>> GetAllUser();
         Task<UserVM> GetById(Guid id);
         Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request);

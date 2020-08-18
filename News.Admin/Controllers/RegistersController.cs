@@ -8,7 +8,7 @@ using News.ViewModel.Catalog.Register;
 
 namespace News.Admin.Controllers
 {
-    public class RegistersController : Controller
+    public class RegistersController : BaseController
     {       
         private readonly IRegisterApiClient _registerApiClient;
 

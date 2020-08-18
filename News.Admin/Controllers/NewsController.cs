@@ -8,7 +8,7 @@ using News.ViewModel.Catalog.Product;
 
 namespace News.Admin.Controllers
 {
-    public class NewsController : Controller
+    public class NewsController : BaseController
     {
         private readonly IProductApiClient _productApiClient;
 

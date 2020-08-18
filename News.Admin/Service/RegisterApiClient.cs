@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using News.ViewModel.Catalog.Register;
 using News.ViewModel.Common;
 using Newtonsoft.Json;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,11 +18,13 @@ namespace News.Admin.Service
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RegisterApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public RegisterApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<ApiResult<bool>> CreateRegister(CreateRegisterRequest request)
         {
@@ -41,6 +46,8 @@ namespace News.Admin.Service
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
             var response = await client.DeleteAsync($"/api/Registers/{request.Id}");
             var result = await response.Content.ReadAsStringAsync();
@@ -54,6 +61,8 @@ namespace News.Admin.Service
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
             var response = await client.GetAsync($"/api/Registers");
             var result = await response.Content.ReadAsStringAsync();
@@ -64,6 +73,8 @@ namespace News.Admin.Service
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
             var response = await client.GetAsync($"/api/Registers/{id}");
             var result = await response.Content.ReadAsStringAsync();
