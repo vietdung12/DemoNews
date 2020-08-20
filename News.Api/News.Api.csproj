@@ -5,10 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\**" />
-    <Content Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
+    <Folder Include="wwwroot\user-content\" />
   </ItemGroup>
 
   <ItemGroup>
