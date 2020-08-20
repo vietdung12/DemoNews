@@ -48,10 +48,11 @@ namespace News.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductViewModel>> CreateProduct(CreateProductRequestModel requestModel)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ProductViewModel>> CreateProduct([FromForm]CreateProductRequestModel requestModel)
         {
             var Model = _mapper.Map<Product>(requestModel);
-             await _newsService.CreateProduct(Model);
+            await _newsService.CreateProduct(Model, requestModel.Image);
 
             var productModel = _mapper.Map<ProductViewModel>(Model);
             //return Ok(productModel);
@@ -62,7 +63,7 @@ namespace News.Api.Controllers
         public async Task<ActionResult> UpdateProduct(int id, UpdateProductRequestModel requestModel)
         {
             var Item = await _newsService.GetProductById(id);
-            if(Item == null)
+            if (Item == null)
             {
                 return NotFound();
             }
@@ -75,7 +76,7 @@ namespace News.Api.Controllers
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var Item = await _newsService.GetProductById(id);
-            if(Item == null)
+            if (Item == null)
             {
                 return NotFound();
             }

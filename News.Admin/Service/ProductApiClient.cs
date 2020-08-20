@@ -5,6 +5,7 @@ using News.ViewModel.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -33,10 +34,26 @@ namespace News.Admin.Service
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
-            var json = JsonConvert.SerializeObject(pro);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var requestContent = new MultipartFormDataContent();
 
-            var response = await client.PostAsync($"/api/News", httpContent);
+            if (pro.Image != null)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(pro.Image.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)pro.Image.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "image", pro.Image.FileName);
+            }
+
+            requestContent.Add(new StringContent(pro.Title.ToString()), "title");
+            requestContent.Add(new StringContent(pro.Local.ToString()), "local");
+            requestContent.Add(new StringContent(pro.Description.ToString()), "description");
+            requestContent.Add(new StringContent(pro.Price.ToString()), "price");
+            requestContent.Add(new StringContent(pro.DateCreated.ToString()), "dateCreated");
+
+            var response = await client.PostAsync($"/api/News", requestContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);

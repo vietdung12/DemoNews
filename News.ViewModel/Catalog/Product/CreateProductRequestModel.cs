@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -15,9 +16,11 @@ namespace News.ViewModel.Catalog.Product
         public string Description { get; set; }
         [Display(Name = "Giá bán")]
         public string Price { get; set; }
+        [Display(Name = "Hình ảnh")]
+        public IFormFile Image { get; set; }
         [Display(Name = "Ngày tạo")]
         public DateTime DateCreated { get; set; }
-
+        
         public CreateProductRequestModel()
         {
             DateCreated = DateTime.Now;

@@ -36,7 +36,8 @@ namespace News.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductRequestModel pro)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm]CreateProductRequestModel pro)
         {
             if (!ModelState.IsValid)
                 return View();

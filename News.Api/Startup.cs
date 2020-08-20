@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using News.Api.Service;
+using News.Api.Service.Storage;
 using News.Data.EF;
 using News.Data.Entities;
 
@@ -39,10 +40,10 @@ namespace News.Api
 
             services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IRegisterService, RegisterService>();
-
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IStorageService, FileStorageService>();
 
             string issuer = Configuration.GetValue<string>("Tokens:Issuer");
             string signingKey = Configuration.GetValue<string>("Tokens:Key");
@@ -91,7 +92,7 @@ namespace News.Api
 
             app.UseRouting();
 
-            app.UseAuthorization();            
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
