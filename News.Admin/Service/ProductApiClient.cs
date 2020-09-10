@@ -76,16 +76,16 @@ namespace News.Admin.Service
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<IEnumerable<ProductViewModel>> GetAllProduct()
+        public async Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
-            var response = await client.GetAsync($"/api/News");
+            var response = await client.GetAsync($"/api/News/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<ProductViewModel>>(result);           
+            return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(result);           
         }
 
         public async Task<ProductViewModel> GetProductById(int id)

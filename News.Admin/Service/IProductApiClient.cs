@@ -9,7 +9,7 @@ namespace News.Admin.Service
 {
     public interface IProductApiClient
     {
-        Task<IEnumerable<ProductViewModel>> GetAllProduct();
+        Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request);
         Task<ProductViewModel> GetProductById(int id);
         Task<ApiResult<bool>> CreateProduct(CreateProductRequestModel pro);
         Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro);

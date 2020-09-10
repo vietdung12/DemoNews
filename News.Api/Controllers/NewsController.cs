@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using News.Api.Service;
 using News.Data.Entities;
 using News.ViewModel.Catalog.Product;
+using News.ViewModel.Common;
 
 namespace News.Api.Controllers
 {
@@ -18,31 +18,27 @@ namespace News.Api.Controllers
     public class NewsController : ControllerBase
     {
         private readonly INewsService _newsService;
-        private readonly IMapper _mapper;
 
-        public NewsController(INewsService newsService, IMapper mapper)
+        public NewsController(INewsService newsService)
         {
-            _newsService = newsService;
-            _mapper = mapper;
+            _newsService = newsService;           
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetAllProducts()
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllProducts([FromQuery]ProductPagingRequest request)
         {
-            var Items = await _newsService.GetAllProduct();
-            var productModel = _mapper.Map<IEnumerable<ProductViewModel>>(Items);
-            return Ok(productModel);
-
+            var Items = await _newsService.GetAllProduct(request);            
+            return Ok(Items);
         }
 
         [HttpGet("{id}", Name = "GetProductById")]
         public async Task<ActionResult<ProductViewModel>> GetProductById(int id)
         {
             var Items = await _newsService.GetProductById(id);
-            var productModel = _mapper.Map<ProductViewModel>(Items);
+            
             if (Items != null)
             {
-                return Ok(productModel);
+                return Ok(Items);
             }
             return NotFound();
         }
@@ -51,36 +47,34 @@ namespace News.Api.Controllers
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ProductViewModel>> CreateProduct([FromForm]CreateProductRequestModel requestModel)
         {
-            var Model = _mapper.Map<Product>(requestModel);
-            await _newsService.CreateProduct(Model, requestModel.Image);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var productId = await _newsService.CreateProduct(requestModel);
+            if (productId == 0)
+                return BadRequest();
 
-            var productModel = _mapper.Map<ProductViewModel>(Model);
+            var product = await _newsService.GetProductById(productId);
             //return Ok(productModel);
-            return CreatedAtRoute(nameof(GetProductById), new { id = productModel.Id }, productModel);
+            return CreatedAtRoute(nameof(GetProductById), new { id = productId }, product);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(int id, UpdateProductRequestModel requestModel)
         {
-            var Item = await _newsService.GetProductById(id);
-            if (Item == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
-            _mapper.Map(requestModel, Item);
-            var resut = await _newsService.UpdateProduct(Item);
+            var resut = await _newsService.UpdateProduct(id, requestModel);
             return Ok(resut);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
-        {
-            var Item = await _newsService.GetProductById(id);
-            if (Item == null)
-            {
-                return NotFound();
-            }
-            var resut = await _newsService.DeleteProduct(Item);
+        {            
+            var resut = await _newsService.DeleteProduct(id);
             return Ok(resut);
         }
     }

@@ -11,10 +11,10 @@ namespace News.Api.Service
 {
     public interface INewsService
     {
-        Task<IEnumerable<Product>> GetAllProduct();
-        Task<Product> GetProductById(int id);
-        Task<ApiResult<bool>> CreateProduct(Product pro, IFormFile image);
-        Task<ApiResult<bool>> UpdateProduct(Product pro);
-        Task<ApiResult<bool>> DeleteProduct(Product pro);
+        Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request);
+        Task<ProductViewModel> GetProductById(int id);
+        Task<int> CreateProduct(CreateProductRequestModel requestModel);
+        Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro);
+        Task<ApiResult<bool>> DeleteProduct(int id);
     }
 }

@@ -17,10 +17,18 @@ namespace News.Admin.Controllers
             _productApiClient = productApiClient;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 6)
         {
-            var data = await _productApiClient.GetAllProduct();
+            var request = new ProductPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
 
+            var data = await _productApiClient.GetAllProduct(request);
+
+            ViewBag.Keyword = keyword;
             if (TempData["result"] != null)
             {
                 ViewBag.SuccessMsg = TempData["result"];

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using News.Api.Service.Storage;
 using News.Data.EF;
@@ -19,27 +20,26 @@ namespace News.Api.Service
     {
         private readonly NewsDbContext _context;
         private readonly IStorageService _storageService;
+        private readonly IMapper _mapper;
 
-        public NewsService(NewsDbContext context, IStorageService storageService)
+        public NewsService(NewsDbContext context, IStorageService storageService, IMapper mapper)
         {
             _context = context;
             _storageService = storageService;
+            _mapper = mapper;
         }
 
-        public async Task<ApiResult<bool>> CreateProduct(Product pro, IFormFile image)
+        public async Task<int> CreateProduct(CreateProductRequestModel requestModel)
         {
-            if (pro == null)
-            {
-                return new ApiErrorResult<bool>("Bản ghi không tồn tại");
-            }
+            var Model = _mapper.Map<Product>(requestModel);           
 
-            if (image != null)
+            if (requestModel.Image != null)
             {
-                pro.Images = new List<Image>()
+                Model.Images = new List<Image>()
                 {
                     new Image()
                     {
-                        ImagePath = await this.SaveFile(image),
+                        ImagePath = await this.SaveFile(requestModel.Image),
                         Caption = "Thumbnail image",
                         DateCreated = DateTime.Now,
                         IsDefault = true,
@@ -47,40 +47,91 @@ namespace News.Api.Service
                 };
             }
 
-            _context.Products.Add(pro);
+            _context.Products.Add(Model);
             await _context.SaveChangesAsync();
-            return new ApiSuccessResult<bool>();
+            return Model.Id;
         }
 
-        public async Task<ApiResult<bool>> DeleteProduct(Product pro)
+        public async Task<ApiResult<bool>> DeleteProduct(int id)
         {
-            if (pro == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return new ApiErrorResult<bool>("Bản ghi không tồn tại");
             }
-            _context.Products.Remove(pro);
+
+            var images = _context.Images.Where(i => i.ProductId == id);
+            foreach (var image in images)
+            {
+                await _storageService.DeleteFileAsync(image.ImagePath);
+            }
+
+            _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
         }
 
-        public async Task<IEnumerable<Product>> GetAllProduct()
+        public async Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request)
         {
-            var Item = await _context.Products.ToListAsync();
-            return Item;
+            //select
+            var query = from p in _context.Products
+                        join i in _context.Images on p.Id equals i.ProductId into pi
+                        from i in pi.DefaultIfEmpty()
+                        //where i == null || i.IsDefault == true
+                        select new { p, i};
+
+            //filter
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.p.Title.Contains(request.Keyword)
+                 || x.p.Local.Contains(request.Keyword)
+                 || x.p.Description.Contains(request.Keyword)
+                 || x.p.Price.Contains(request.Keyword));
+            }
+
+            //paging
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    Title = x.p.Title,
+                    Local = x.p.Local,
+                    Description = x.p.Description,
+                    Price = x.p.Price,
+                    DateCreated = x.p.DateCreated,
+                    Status = x.p.Status,
+                    Images = x.i.ImagePath
+                }).ToListAsync();           
+
+            var pagedResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = data
+            };
+
+            return pagedResult;
         }
 
-        public async Task<Product> GetProductById(int id)
+        public async Task<ProductViewModel> GetProductById(int id)
         {
             var Item = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-            return Item;
+            var productModel = _mapper.Map<ProductViewModel>(Item);           
+            return productModel;
         }
 
-        public async Task<ApiResult<bool>> UpdateProduct(Product pro)
+        public async Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro)
         {
             if (pro == null)
             {
                 return new ApiErrorResult<bool>("Bản ghi không tồn tại");
             }
+            var Item = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            _mapper.Map(pro, Item);
+
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<bool>();
         }

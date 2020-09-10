@@ -22,6 +22,8 @@ namespace News.ViewModel.Catalog.Product
         public DateTime DateCreated { get; set; }
         [Display(Name = "Trạng thái")]
         public bool Status { get; set; }
+        [Display(Name = "Hình ảnh")]
+        public string Images { get; set; }
 
     }
 }
