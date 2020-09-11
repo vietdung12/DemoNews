@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace News.Admin.Service
+namespace News.ServiceApiClient
 {
     public interface IRegisterApiClient
     {
-        Task<IEnumerable<RegisterViewModel>> GetAllRegister();
+        Task<PagedResult<RegisterViewModel>> GetAllRegister(RegisterPagingRequest request);
         Task<RegisterViewModel> GetRegisterById(int id);
         Task<ApiResult<bool>> CreateRegister(CreateRegisterRequest request);
         Task<ApiResult<bool>> DeleteRegister(DeleteRegisterRequest request);

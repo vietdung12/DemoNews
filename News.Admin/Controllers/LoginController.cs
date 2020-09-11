@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using News.Admin.Service;
+using News.ServiceApiClient;
 using News.ViewModel.System.User;
 
 namespace News.Admin.Controllers

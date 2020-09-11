@@ -10,7 +10,7 @@ namespace News.Api.Service
     public interface IUserService
     {
         Task<ApiResult<string>> Authencate(LoginRequest request);
-        Task<IEnumerable<UserVM>> GetAllUsers();
+        Task<PagedResult<UserVM>> GetAllUsers(UserPagingRequest request);
         Task<UserVM> GetUserById(Guid id);
         Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request);
         Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);

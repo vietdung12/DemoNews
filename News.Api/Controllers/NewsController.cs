@@ -56,7 +56,7 @@ namespace News.Api.Controllers
                 return BadRequest();
 
             var product = await _newsService.GetProductById(productId);
-            //return Ok(productModel);
+            
             return CreatedAtRoute(nameof(GetProductById), new { id = productId }, product);
         }
 

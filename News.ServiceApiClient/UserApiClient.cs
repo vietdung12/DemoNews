@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace News.Admin.Service
+namespace News.ServiceApiClient
 {
     public class UserApiClient : IUserApiClient
     {
@@ -33,7 +33,7 @@ namespace News.Admin.Service
 
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-         
+
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
@@ -44,7 +44,7 @@ namespace News.Admin.Service
         }
 
         public async Task<ApiResult<bool>> Delete(Guid id)
-        {           
+        {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
@@ -58,16 +58,16 @@ namespace News.Admin.Service
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<IEnumerable<UserVM>> GetAllUser()
+        public async Task<PagedResult<UserVM>> GetAllUser(UserPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
-            var response = await client.GetAsync($"/api/Users");
+            var response = await client.GetAsync($"/api/Users/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<UserVM>>(result);
+            return JsonConvert.DeserializeObject<PagedResult<UserVM>>(result);
         }
 
         public async Task<UserVM> GetById(Guid id)

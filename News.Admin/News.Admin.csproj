@@ -6,10 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.1.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.7.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.7.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\News.Api\News.Api.csproj" />
+    <ProjectReference Include="..\News.ServiceApiClient\News.ServiceApiClient.csproj" />
     <ProjectReference Include="..\News.ViewModel\News.ViewModel.csproj" />
   </ItemGroup>
 

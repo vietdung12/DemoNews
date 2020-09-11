@@ -72,20 +72,46 @@ namespace News.Api.Service
             return new ApiErrorResult<bool>("Xóa không thành công");
         }
 
-        public async Task<IEnumerable<UserVM>> GetAllUsers()
+        public async Task<PagedResult<UserVM>> GetAllUsers(UserPagingRequest request)
         {
-            var user = await _userManager.Users.Select(x => new UserVM() 
-            {
-                Email = x.Email,
-                PhoneNumber = x.PhoneNumber,
-                UserName = x.UserName,
-                FirstName = x.FirstName,
-                Id = x.Id,
-                LastName = x.LastName,
-                DoB = x.DoB
-            }).ToListAsync();
+            var query = from u in _userManager.Users
 
-            return user;
+                        select new { u };
+
+            //filter
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.u.FirstName.Contains(request.Keyword)
+                 || x.u.LastName.Contains(request.Keyword)
+                 || x.u.UserName.Contains(request.Keyword)
+                 || x.u.Email.Contains(request.Keyword)
+                 || x.u.PhoneNumber.Contains(request.Keyword));
+            }
+
+            //paging
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserVM()
+                {
+                    Email = x.u.Email,
+                    PhoneNumber = x.u.PhoneNumber,
+                    UserName = x.u.UserName,
+                    FirstName = x.u.FirstName,
+                    Id = x.u.Id,
+                    LastName = x.u.LastName,
+                    DoB = x.u.DoB
+                }).ToListAsync();
+
+            var pagedResult = new PagedResult<UserVM>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = data
+            };
+
+            return pagedResult;           
         }
 
         public async Task<UserVM> GetUserById(Guid id)

@@ -12,7 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace News.Admin.Service
+namespace News.ServiceApiClient
 {
     public class ProductApiClient : IProductApiClient
     {
@@ -85,7 +85,7 @@ namespace News.Admin.Service
 
             var response = await client.GetAsync($"/api/News/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(result);           
+            return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(result);
         }
 
         public async Task<ProductViewModel> GetProductById(int id)
@@ -96,8 +96,8 @@ namespace News.Admin.Service
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
             var response = await client.GetAsync($"/api/News/{id}");
-            var result = await response.Content.ReadAsStringAsync();          
-            return JsonConvert.DeserializeObject<ProductViewModel>(result);            
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ProductViewModel>(result);
         }
 
         public async Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro)

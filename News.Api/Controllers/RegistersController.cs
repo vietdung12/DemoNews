@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,56 +17,54 @@ namespace News.Api.Controllers
     [Authorize]
     public class RegistersController : ControllerBase
     {
-        private readonly IRegisterService _registerService;
-        private readonly IMapper _mapper;
+        private readonly IRegisterService _registerService;      
 
-        public RegistersController(IRegisterService registerService, IMapper mapper)
+        public RegistersController(IRegisterService registerService)
         {
-            _registerService = registerService;
-            _mapper = mapper;
+            _registerService = registerService;   
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RegisterViewModel>>> GetAll()
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAll([FromQuery]RegisterPagingRequest request)
         {
-            var item = await _registerService.GetAllRegister();
-            var model = _mapper.Map<IEnumerable<RegisterViewModel>>(item);
-            return Ok(model);
+            var item = await _registerService.GetAllRegister(request);    
+            return Ok(item);
         }
 
         [HttpGet("{id}", Name = "GetById")]
         public async Task<ActionResult<RegisterViewModel>> GetById(int id)
         {
-            var item = await _registerService.GetRegisterById(id);
-            var model = _mapper.Map<RegisterViewModel>(item);
-            if (item != null)
+            var Items = await _registerService.GetRegisterById(id);
+
+            if (Items != null)
             {
-                return Ok(model);
+                return Ok(Items);
             }
             return NotFound();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<ApiResult<RegisterViewModel>>> Create(CreateRegisterRequest request)
+        public async Task<ActionResult<RegisterViewModel>> Create(CreateRegisterRequest request)
         {
-            var itemModel = _mapper.Map<Register>(request);
-            await _registerService.CreateRegister(itemModel);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var registerId = await _registerService.CreateRegister(request);
+            if (registerId == 0)
+                return BadRequest();
 
-            var model = _mapper.Map<RegisterViewModel>(itemModel);
-            return CreatedAtRoute(nameof(GetById), new { id = model.Id }, model);
+            var register = await _registerService.GetRegisterById(registerId);
+            
+            return CreatedAtRoute(nameof(GetById), new { id = registerId }, register);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var item = await _registerService.GetRegisterById(id);
-            if(item == null)
-            {
-                return NotFound();
-            }
-            var delete = await _registerService.DeleteRegister(item);
-            return Ok(delete);
+            var resut = await _registerService.DeleteRegister(id);
+            return Ok(resut);
         }
     }
 }

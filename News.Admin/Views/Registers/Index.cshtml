@@ -1,4 +1,5 @@
-﻿@model IEnumerable<News.ViewModel.Catalog.Register.RegisterViewModel>
+﻿@using News.ViewModel.Common;
+@model PagedResult<News.ViewModel.Catalog.Register.RegisterViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,6 +18,19 @@
 
 <p>
     <a asp-action="CreateRegister">Create New</a>
+    <div class="col-md-6 col-xs-12">
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                </div>
+                <div class="cold-md-3">
+                    <button type="submit" class="btn btn-primary">Tìm</button>
+                    <button type="button" onclick="window.location.href='/Registers/Index'" class="btn btn-dark">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </p>
 <table class="table">
     @if (ViewBag.SuccessMsg != null)
@@ -28,53 +42,54 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Id
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telephone)
+                Telephone
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdProduct)
+               IdProduct
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                DateCreated
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telephone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdProduct)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
-            </td>
-            <td>
-                @Html.ActionLink("Details", "DetailsRegister", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "DeleteRegister", new { id = item.Id })
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telephone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdProduct)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreated)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "DetailsRegister", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "DeleteRegister", new { id = item.Id })
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+@await Component.InvokeAsync("Pager", Model)

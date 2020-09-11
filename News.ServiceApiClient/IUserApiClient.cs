@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace News.Admin.Service
+namespace News.ServiceApiClient
 {
     public interface IUserApiClient
     {
         Task<ApiResult<string>> Authenticate(LoginRequest request);
-        Task<IEnumerable<UserVM>> GetAllUser();
+        Task<PagedResult<UserVM>> GetAllUser(UserPagingRequest request);
         Task<UserVM> GetById(Guid id);
         Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request);
         Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);

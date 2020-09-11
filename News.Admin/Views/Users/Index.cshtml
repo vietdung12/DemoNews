@@ -1,4 +1,5 @@
-﻿@model IEnumerable<News.ViewModel.System.User.UserVM>
+﻿@using News.ViewModel.Common
+@model PagedResult<News.ViewModel.System.User.UserVM>
 
 @{
     ViewData["Title"] = "Index";
@@ -17,6 +18,19 @@
 
 <p>
     <a asp-action="Create">Create New</a>
+    <div class="col-md-6 col-xs-12">
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                </div>
+                <div class="cold-md-3">
+                    <button type="submit" class="btn btn-primary">Tìm</button>
+                    <button type="button" onclick="window.location.href='/Users/Index'" class="btn btn-dark">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </p>
 <table class="table">
     @if (ViewBag.SuccessMsg != null)
@@ -28,28 +42,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                Tên
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                Họ
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                Số điện thoại
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                Tên tài khoản
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DoB)
+                Ngày sinh
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
@@ -79,3 +93,4 @@
         }
     </tbody>
 </table>
+@await Component.InvokeAsync("Pager", Model)

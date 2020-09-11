@@ -1,4 +1,5 @@
 ﻿using News.Data.Entities;
+using News.ViewModel.Catalog.Register;
 using News.ViewModel.Common;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace News.Api.Service
 {
     public interface IRegisterService
     {
-        Task<IEnumerable<Register>> GetAllRegister();
-        Task<Register> GetRegisterById(int id);
-        Task<ApiResult<bool>> CreateRegister(Register reg);       
-        Task<ApiResult<bool>> DeleteRegister(Register reg);
+        Task<PagedResult<RegisterViewModel>> GetAllRegister(RegisterPagingRequest request);
+        Task<RegisterViewModel> GetRegisterById(int id);
+        Task<int> CreateRegister(CreateRegisterRequest request);       
+        Task<ApiResult<bool>> DeleteRegister(int id);
     }
 }

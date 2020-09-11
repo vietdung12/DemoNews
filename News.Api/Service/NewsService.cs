@@ -86,6 +86,7 @@ namespace News.Api.Service
                 query = query.Where(x => x.p.Title.Contains(request.Keyword)
                  || x.p.Local.Contains(request.Keyword)
                  || x.p.Description.Contains(request.Keyword)
+                 || x.p.Id.ToString().Contains(request.Keyword)
                  || x.p.Price.Contains(request.Keyword));
             }
 

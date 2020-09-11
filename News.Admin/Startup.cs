@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using News.Admin.Service;
+using News.ServiceApiClient;
 using News.ViewModel.Catalog.Product;
 using News.ViewModel.System.User;
 
@@ -41,10 +41,7 @@ namespace News.Admin
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddControllersWithViews().AddFluentValidation();
-            services.AddTransient<IValidator<CreateProductRequestModel>, CreateProductRequestValidator>();
-            services.AddTransient<IValidator<UserRegisterRequest>, UserRegisterValidator>();
-            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());            
 
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<IRegisterApiClient, RegisterApiClient>();

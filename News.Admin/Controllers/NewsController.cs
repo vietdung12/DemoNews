@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using News.Admin.Service;
+using News.ServiceApiClient;
 using News.ViewModel.Catalog.Product;
 
 namespace News.Admin.Controllers

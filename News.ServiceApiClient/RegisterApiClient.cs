@@ -12,7 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace News.Admin.Service
+namespace News.ServiceApiClient
 {
     public class RegisterApiClient : IRegisterApiClient
     {
@@ -57,16 +57,16 @@ namespace News.Admin.Service
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<IEnumerable<RegisterViewModel>> GetAllRegister()
+        public async Task<PagedResult<RegisterViewModel>> GetAllRegister(RegisterPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
-            var response = await client.GetAsync($"/api/Registers");
+            var response = await client.GetAsync($"/api/Registers/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<RegisterViewModel>>(result);
+            return JsonConvert.DeserializeObject<PagedResult<RegisterViewModel>>(result);
         }
 
         public async Task<RegisterViewModel> GetRegisterById(int id)

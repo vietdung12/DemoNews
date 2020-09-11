@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using News.Admin.Service;
+using News.ServiceApiClient;
 using News.ViewModel.Catalog.Register;
 
 namespace News.Admin.Controllers
@@ -16,10 +16,19 @@ namespace News.Admin.Controllers
         {
             _registerApiClient = registerApiClient;
         }
-        public async Task<IActionResult> Index()
-        {
-            var data = await _registerApiClient.GetAllRegister();
 
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 6)
+        {
+            var request = new RegisterPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+
+            var data = await _registerApiClient.GetAllRegister(request);
+
+            ViewBag.Keyword = keyword;
             if (TempData["result"] != null)
             {
                 ViewBag.SuccessMsg = TempData["result"];

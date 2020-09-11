@@ -37,10 +37,10 @@ namespace News.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPaging()
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery]UserPagingRequest request)
         {
-            var users = await _userService.GetAllUsers();
+            var users = await _userService.GetAllUsers(request);
             return Ok(users);
         }
 
