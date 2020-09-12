@@ -14,71 +14,38 @@ using System.Threading.Tasks;
 
 namespace News.ServiceApiClient
 {
-    public class RegisterApiClient : IRegisterApiClient
-    {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
+    public class RegisterApiClient : BaseApiClient, IRegisterApiClient
+    {       
         public RegisterApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+            : base(httpClientFactory, httpContextAccessor, configuration)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
+            
         }
+
         public async Task<ApiResult<bool>> CreateRegister(CreateRegisterRequest request)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync($"/api/Registers", httpContent);
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            var data = await PostAsync<bool>($"/api/Registers", httpContent);        
+            return data;
         }
 
         public async Task<ApiResult<bool>> DeleteRegister(DeleteRegisterRequest request)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.DeleteAsync($"/api/Registers/{request.Id}");
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            var data = await DeleteAsync<bool>($"/api/Registers/{request.Id}");
+            return data;
         }
 
         public async Task<PagedResult<RegisterViewModel>> GetAllRegister(RegisterPagingRequest request)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.GetAsync($"/api/Registers/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<PagedResult<RegisterViewModel>>(result);
+            var data = await GetAsync<PagedResult<RegisterViewModel>>($"/api/Registers/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");           
+            return data;
         }
 
         public async Task<RegisterViewModel> GetRegisterById(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.GetAsync($"/api/Registers/{id}");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<RegisterViewModel>(result);
+            var data = await GetAsync<RegisterViewModel>($"/api/Registers/{id}");            
+            return data;
         }
     }
 }

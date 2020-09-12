@@ -14,26 +14,16 @@ using System.Threading.Tasks;
 
 namespace News.ServiceApiClient
 {
-    public class ProductApiClient : IProductApiClient
+    public class ProductApiClient : BaseApiClient, IProductApiClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ProductApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public ProductApiClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+            : base(httpClientFactory, httpContextAccessor, configuration)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<ApiResult<bool>> CreateProduct(CreateProductRequestModel pro)
-        {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
+        {      
             var requestContent = new MultipartFormDataContent();
 
             if (pro.Image != null)
@@ -53,69 +43,35 @@ namespace News.ServiceApiClient
             requestContent.Add(new StringContent(pro.Price.ToString()), "price");
             requestContent.Add(new StringContent(pro.DateCreated.ToString()), "dateCreated");
 
-            var response = await client.PostAsync($"/api/News", requestContent);
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            var dataUrl = await PostAsync<bool>($"/api/News", requestContent);            
+            return dataUrl;            
+;
         }
 
         public async Task<ApiResult<bool>> DeleteProduct(DeleteProductRequestModel pro)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.DeleteAsync($"/api/News/{pro.Id}");
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            var data = await DeleteAsync<bool>($"/api/News/{pro.Id}");           
+            return data;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.GetAsync($"/api/News/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(result);
+            var data = await GetAsync<PagedResult<ProductViewModel>>($"/api/News/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");           
+            return data;
         }
 
         public async Task<ProductViewModel> GetProductById(int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
-            var response = await client.GetAsync($"/api/News/{id}");
-            var result = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProductViewModel>(result);
+            var data = await GetAsync<ProductViewModel>($"/api/News/{id}");           
+            return data;
         }
 
         public async Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro)
         {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-
             var json = JsonConvert.SerializeObject(pro);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PutAsync($"/api/News/{id}", httpContent);
-            var result = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
-
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+            var data = await PutAsync<bool>($"/api/News/{id}", httpContent);           
+            return data;
         }
     }
 }
