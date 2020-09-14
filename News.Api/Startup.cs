@@ -41,8 +41,10 @@ namespace News.Api
             services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddScoped<SignInManager<AppUser>, SignInManager<AppUser>>();
+            services.AddScoped<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddScoped<IStorageService, FileStorageService>();
 
             string issuer = Configuration.GetValue<string>("Tokens:Issuer");

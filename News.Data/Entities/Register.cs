@@ -8,7 +8,7 @@ namespace News.Data.Entities
         public string Name { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }
-        public int IdProduct { get; set; }
+        public int? IdProduct { get; set; }
         public DateTime DateCreated { get; set; }
         
     }

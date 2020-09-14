@@ -11,7 +11,6 @@ namespace News.ViewModel.Catalog.Register
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Tên không được bỏ trống").MaximumLength(100).WithMessage("Tên không vượt quá 100 kí tự");
             RuleFor(x => x.Telephone).NotEmpty().WithMessage("Số điện thoại không được bỏ trống");
-            RuleFor(x => x.IdProduct).NotEmpty().WithMessage("ID SP không được bỏ trống");
-        }
+        }           
     }
 }

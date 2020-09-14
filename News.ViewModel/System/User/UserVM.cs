@@ -21,5 +21,7 @@ namespace News.ViewModel.System.User
         [Display(Name = "Ngày Sinh")]
         [DataType(DataType.Date)]
         public DateTime DoB { get; set; }
+
+        public IList<string> Roles { get; set; }
     }
 }

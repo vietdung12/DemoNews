@@ -20,12 +20,14 @@ namespace News.Api.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _config;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
+            _roleManager = roleManager;
         }
 
         public async Task<ApiResult<string>> Authencate(LoginRequest request)
@@ -38,12 +40,19 @@ namespace News.Api.Service
             {
                 return new ApiErrorResult<string>("Đăng nhập không đúng");
             }
+
+            var userRoles = await _userManager.IsInRoleAsync(user, "admin");    
+            if (userRoles == false)
+            {
+                return new ApiErrorResult<string>("Bạn không có quyền đăng nhập");
+            }
+
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.GivenName,user.FirstName),
-                new Claim(ClaimTypes.Role, string.Join(";",roles)),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Role, string.Join(";", roles)),
                 new Claim(ClaimTypes.Name, request.UserName)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
@@ -116,7 +125,8 @@ namespace News.Api.Service
 
         public async Task<UserVM> GetUserById(Guid id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(id.ToString());            
+            var roles = await _userManager.GetRolesAsync(user);
 
             var userVm = new UserVM()
             {
@@ -126,7 +136,8 @@ namespace News.Api.Service
                 DoB = user.DoB,
                 Id = user.Id,
                 LastName = user.LastName,
-                UserName = user.UserName,               
+                UserName = user.UserName,
+                Roles = roles
             };
 
             return userVm;
@@ -153,7 +164,7 @@ namespace News.Api.Service
                 UserName = request.UserName,
                 PhoneNumber = request.PhoneNumber.ToString()
             };
-            var result = await _userManager.CreateAsync(user, request.Password);
+            var result = await _userManager.CreateAsync(user, request.Password);            
             if (result.Succeeded)
             {
                 return new ApiSuccessResult<bool>();
