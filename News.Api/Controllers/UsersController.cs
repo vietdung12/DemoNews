@@ -22,14 +22,14 @@ namespace News.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost("authenticate")]
+        [HttpPost("authenticate/admin")]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(LoginRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _userService.Authencate(request);
+            var result = await _userService.AuthencateAdmin(request);
             if (string.IsNullOrEmpty(result.ResultObj))
             {
                 return BadRequest(result);

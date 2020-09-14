@@ -9,7 +9,7 @@ namespace News.Api.Service
 {
     public interface IUserService
     {
-        Task<ApiResult<string>> Authencate(LoginRequest request);
+        Task<ApiResult<string>> AuthencateAdmin(LoginRequest request);
         Task<PagedResult<UserVM>> GetAllUsers(UserPagingRequest request);
         Task<UserVM> GetUserById(Guid id);
         Task<ApiResult<bool>> RegisterUser(UserRegisterRequest request);

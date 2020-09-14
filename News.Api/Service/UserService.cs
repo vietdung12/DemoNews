@@ -20,17 +20,16 @@ namespace News.Api.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _config;
-        private readonly RoleManager<AppRole> _roleManager;
+        
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config, RoleManager<AppRole> roleManager)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _config = config;
-            _roleManager = roleManager;
+            _config = config;          
         }
 
-        public async Task<ApiResult<string>> Authencate(LoginRequest request)
+        public async Task<ApiResult<string>> AuthencateAdmin(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null) return new ApiErrorResult<string>("Tài khoản không tồn tại");

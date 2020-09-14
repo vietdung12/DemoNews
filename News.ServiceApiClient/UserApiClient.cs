@@ -25,7 +25,7 @@ namespace News.ServiceApiClient
         {           
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var data = await PostAsync<string>("/api/users/authenticate", httpContent);            
+            var data = await PostAsync<string>("/api/users/authenticate/admin", httpContent);            
             return data;
         }
 
