@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using News.Api.Service.Storage;
 using News.Data.EF;
 using News.Data.Entities;
+using News.ViewModel.Catalog.Image;
 using News.ViewModel.Catalog.Product;
 using News.ViewModel.Common;
 using System;
@@ -29,6 +30,22 @@ namespace News.Api.Service
             _mapper = mapper;
         }
 
+        public async Task<int> AddImage(AddImageRequest request)
+        {
+            var productImage = new Image() 
+            {
+                Caption = request.Caption,
+                DateCreated = DateTime.Now,               
+                IsDefault = false,
+                ProductId = request.ProductId,
+                ImagePath = await this.SaveFile(request.ImageFile)
+        };
+
+            _context.Images.Add(productImage);
+            await _context.SaveChangesAsync();
+            return productImage.Id;
+        }
+
         public async Task<int> CreateProduct(CreateProductRequestModel requestModel)
         {
             var Model = _mapper.Map<Product>(requestModel);           
@@ -50,6 +67,20 @@ namespace News.Api.Service
             _context.Products.Add(Model);
             await _context.SaveChangesAsync();
             return Model.Id;
+        }
+
+        public async Task<ApiResult<bool>> DeleteImage(int id)
+        {
+            var image = await _context.Images.FindAsync(id);
+            if (image == null)
+            {
+                return new ApiErrorResult<bool>("hình ảnh không tồn tại");
+            }
+            await _storageService.DeleteFileAsync(image.ImagePath);
+
+            _context.Images.Remove(image);
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
         }
 
         public async Task<ApiResult<bool>> DeleteProduct(int id)
@@ -77,7 +108,7 @@ namespace News.Api.Service
             var query = from p in _context.Products
                         join i in _context.Images on p.Id equals i.ProductId into pi
                         from i in pi.DefaultIfEmpty()
-                        //where i == null || i.IsDefault == true
+                        where i == null || i.IsDefault == true
                         select new { p, i};
 
             //filter
@@ -117,9 +148,32 @@ namespace News.Api.Service
             return pagedResult;
         }
 
+        public async Task<ImageVM> GetImageById(int imageId)
+        {
+            var image = await _context.Images.FindAsync(imageId);
+            var viewModel = _mapper.Map<ImageVM>(image);
+            return viewModel;
+        }
+
+        public async Task<List<ImageVM>> GetListImages(int productId)
+        {
+            var listImage = await _context.Images.Where(x => x.ProductId == productId)
+                .Select(i => new ImageVM()
+                {
+                    Id = i.Id,
+                    ImagePath = i.ImagePath,
+                    Caption = i.Caption,
+                    DateCreated = i.DateCreated,
+                    IsDefault = i.IsDefault,
+                    ProductId = i.ProductId
+                }).ToListAsync();
+            
+            return listImage;
+        }
+
         public async Task<ProductViewModel> GetProductById(int id)
         {
-            var Item = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var Item = await _context.Products.FindAsync(id);
             var productModel = _mapper.Map<ProductViewModel>(Item);           
             return productModel;
         }

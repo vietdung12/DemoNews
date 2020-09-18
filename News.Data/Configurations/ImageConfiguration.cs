@@ -16,8 +16,7 @@ namespace News.Data.Configurations
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.ImagePath).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Caption).HasMaxLength(200).IsRequired();
-            builder.Property(x => x.DateCreated).IsRequired();
-            builder.Property(x => x.IsDefault).HasDefaultValue(1);
+            builder.Property(x => x.DateCreated).IsRequired();           
 
             builder.HasOne(x => x.Product).WithMany(x => x.Images).HasForeignKey(x => x.ProductId);
         }

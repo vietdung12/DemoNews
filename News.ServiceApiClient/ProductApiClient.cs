@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using News.ViewModel.Catalog.Image;
 using News.ViewModel.Catalog.Product;
 using News.ViewModel.Common;
 using Newtonsoft.Json;
@@ -20,6 +21,28 @@ namespace News.ServiceApiClient
             : base(httpClientFactory, httpContextAccessor, configuration)
         {
 
+        }
+
+        public async Task<ApiResult<bool>> AddImage(AddImageRequest request)
+        {
+            var requestContent = new MultipartFormDataContent();
+            if (request.ImageFile != null)
+            {
+                byte[] data;
+                using (var br = new BinaryReader(request.ImageFile.OpenReadStream()))
+                {
+                    data = br.ReadBytes((int)request.ImageFile.OpenReadStream().Length);
+                }
+                ByteArrayContent bytes = new ByteArrayContent(data);
+                requestContent.Add(bytes, "imageFile", request.ImageFile.FileName);
+            }
+            requestContent.Add(new StringContent(request.ProductId.ToString()), "productId");
+            requestContent.Add(new StringContent(request.Caption.ToString()), "caption");
+            requestContent.Add(new StringContent(request.DateCreated.ToString()), "dateCreated");
+            requestContent.Add(new StringContent(request.IsDefault.ToString()), "isDefault");
+
+            var dataUrl = await PostAsync<bool>($"/api/News/image", requestContent);
+            return dataUrl;
         }
 
         public async Task<ApiResult<bool>> CreateProduct(CreateProductRequestModel pro)
@@ -48,6 +71,12 @@ namespace News.ServiceApiClient
 ;
         }
 
+        public async Task<ApiResult<bool>> DeleteImage(DeleteImageRequest request)
+        {
+            var data = await DeleteAsync<bool>($"/api/News/image/{request.Id}");
+            return data;
+        }
+
         public async Task<ApiResult<bool>> DeleteProduct(DeleteProductRequestModel pro)
         {
             var data = await DeleteAsync<bool>($"/api/News/{pro.Id}");           
@@ -57,6 +86,18 @@ namespace News.ServiceApiClient
         public async Task<PagedResult<ProductViewModel>> GetAllProduct(ProductPagingRequest request)
         {
             var data = await GetAsync<PagedResult<ProductViewModel>>($"/api/News/paging?pageIndex={request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");           
+            return data;
+        }
+
+        public async Task<ImageVM> GetImageById(int id)
+        {
+            var data = await GetAsync<ImageVM>($"/api/News/image/{id}");
+            return data;
+        }
+
+        public async Task<List<ImageVM>> GetListImages(int productId)
+        {
+            var data = await GetAsync<List<ImageVM>>($"/api/News/listImage/{productId}");
             return data;
         }
 

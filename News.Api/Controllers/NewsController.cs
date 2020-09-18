@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using News.Api.Service;
 using News.Data.Entities;
+using News.ViewModel.Catalog.Image;
 using News.ViewModel.Catalog.Product;
 using News.ViewModel.Common;
 
@@ -75,6 +76,49 @@ namespace News.Api.Controllers
         public async Task<ActionResult> DeleteProduct(int id)
         {            
             var resut = await _newsService.DeleteProduct(id);
+            return Ok(resut);
+        }
+
+        [HttpGet("listImage/{productId}")]
+        public async Task<IActionResult> GetListImages(int productId)
+        {
+            var Items = await _newsService.GetListImages(productId);
+            return Ok(Items);
+        }
+
+        [HttpGet("image/{id}", Name = "GetImageById")]
+        public async Task<ActionResult<ProductViewModel>> GetImageById(int id)
+        {
+            var Items = await _newsService.GetImageById(id);
+
+            if (Items != null)
+            {
+                return Ok(Items);
+            }
+            return NotFound();
+        }
+
+        [HttpPost("image")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ProductViewModel>> AddImage([FromForm]AddImageRequest requestModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var imageId = await _newsService.AddImage(requestModel);
+            if (imageId == 0)
+                return BadRequest();
+
+            var image = await _newsService.GetImageById(imageId);
+
+            return CreatedAtRoute(nameof(GetImageById), new { id = imageId }, image);
+        }
+
+        [HttpDelete("image/{id}")]
+        public async Task<ActionResult> DeleteImage(int id)
+        {
+            var resut = await _newsService.DeleteImage(id);
             return Ok(resut);
         }
     }

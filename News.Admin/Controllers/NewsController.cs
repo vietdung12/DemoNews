@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using News.ServiceApiClient;
+using News.ViewModel.Catalog.Image;
 using News.ViewModel.Catalog.Product;
 
 namespace News.Admin.Controllers
@@ -130,6 +131,35 @@ namespace News.Admin.Controllers
             {
                 //thông báo Action result cho trang Index
                 TempData["result"] = "Xóa thành công";
+
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+        [HttpGet]
+        public IActionResult AddImages(int productId)
+        {
+            return View(new AddImageRequest()
+            {
+                ProductId = productId
+            });
+        }
+
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImages([FromForm]AddImageRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.AddImage(request);
+            if (result.IsSuccessed)
+            {
+                //thông báo Action result cho trang Index
+                TempData["result"] = "Thêm mới thành công";
 
                 return RedirectToAction("Index");
             }
