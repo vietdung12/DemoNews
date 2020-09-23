@@ -10,7 +10,5 @@ namespace News.ViewModel.Catalog.Image
         public int ProductId { get; set; }
         public IFormFile ImageFile { get; set; }
         public string Caption { get; set; }
-        public DateTime DateCreated { get; set; }
-        public bool IsDefault { get; set; }
     } 
 }

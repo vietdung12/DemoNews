@@ -37,9 +37,7 @@ namespace News.ServiceApiClient
                 requestContent.Add(bytes, "imageFile", request.ImageFile.FileName);
             }
             requestContent.Add(new StringContent(request.ProductId.ToString()), "productId");
-            requestContent.Add(new StringContent(request.Caption.ToString()), "caption");
-            requestContent.Add(new StringContent(request.DateCreated.ToString()), "dateCreated");
-            requestContent.Add(new StringContent(request.IsDefault.ToString()), "isDefault");
+            requestContent.Add(new StringContent(request.Caption.ToString()), "caption");           
 
             var dataUrl = await PostAsync<bool>($"/api/News/image", requestContent);
             return dataUrl;
@@ -104,6 +102,14 @@ namespace News.ServiceApiClient
         public async Task<ProductViewModel> GetProductById(int id)
         {
             var data = await GetAsync<ProductViewModel>($"/api/News/{id}");           
+            return data;
+        }
+
+        public async Task<ApiResult<bool>> SetImage(int productId, SetDefaultImageRequest request)
+        {
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var data = await PutAsync<bool>($"/api/News/image/{productId}", httpContent);
             return data;
         }
 

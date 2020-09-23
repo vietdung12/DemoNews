@@ -38,8 +38,12 @@ namespace News.Api.Service
                 DateCreated = DateTime.Now,               
                 IsDefault = false,
                 ProductId = request.ProductId,
-                ImagePath = await this.SaveFile(request.ImageFile)
-        };
+                
+            };
+            if(request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+            }
 
             _context.Images.Add(productImage);
             await _context.SaveChangesAsync();
@@ -157,7 +161,7 @@ namespace News.Api.Service
 
         public async Task<List<ImageVM>> GetListImages(int productId)
         {
-            var listImage = await _context.Images.Where(x => x.ProductId == productId)
+            var listImage = await _context.Images.Where(x => x.ProductId == productId).Take(5)
                 .Select(i => new ImageVM()
                 {
                     Id = i.Id,
@@ -178,13 +182,36 @@ namespace News.Api.Service
             return productModel;
         }
 
+        public async Task<ApiResult<bool>> SetImage(int productId, SetDefaultImageRequest request)
+        {
+            var listImage = await _context.Images.FirstOrDefaultAsync(x => x.ProductId == productId);
+            if (listImage == null)
+            {
+                return new ApiErrorResult<bool>("Sản phẩm không có hình ảnh");
+            }
+
+            foreach (var setImage in request.Images) 
+            {
+                var image = await _context.Images.FirstOrDefaultAsync(x => x.ProductId == productId && x.Id == int.Parse(setImage.Id));
+                if(image.IsDefault == true && setImage.Selected == false) 
+                {
+                    image.IsDefault = false;
+                }else if(image.IsDefault == false &&  setImage.Selected == true) 
+                {
+                    image.IsDefault = true;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+        }
+
         public async Task<ApiResult<bool>> UpdateProduct(int id, UpdateProductRequestModel pro)
         {
             if (pro == null)
             {
                 return new ApiErrorResult<bool>("Bản ghi không tồn tại");
             }
-            var Item = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var Item = await _context.Products.FindAsync(id);
             _mapper.Map(pro, Item);
 
             await _context.SaveChangesAsync();

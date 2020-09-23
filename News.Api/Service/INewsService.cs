@@ -22,5 +22,6 @@ namespace News.Api.Service
         Task<List<ImageVM>> GetListImages(int productId);
         Task<int> AddImage(AddImageRequest request);
         Task<ApiResult<bool>> DeleteImage(int id);
+        Task<ApiResult<bool>> SetImage(int productId, SetDefaultImageRequest request);
     }
 }

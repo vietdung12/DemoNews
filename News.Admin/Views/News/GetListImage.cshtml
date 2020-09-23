@@ -1,0 +1,62 @@
+﻿@model IEnumerable<News.ViewModel.Catalog.Image.ImageVM>
+
+@{
+    ViewData["Title"] = "GetListImage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>GetListImage</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Caption)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDefault)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                <img src="https://localhost:5001/user-content/@item.ImagePath" width="60" height="60">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Caption)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDefault)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductId)
+            </td>
+            <td>               
+                @Html.ActionLink("Details", "ImageDetails", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteImages", new { id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using News.ServiceApiClient;
 using News.ViewModel.Catalog.Image;
 using News.ViewModel.Catalog.Product;
+using News.ViewModel.Common;
 
 namespace News.Admin.Controllers
 {
@@ -166,6 +167,91 @@ namespace News.Admin.Controllers
 
             ModelState.AddModelError("", result.Message);
             return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetListImage(int productId)
+        {
+            var listImage = await _productApiClient.GetListImages(productId);              
+            return View(listImage);  
+        }
+
+        [HttpGet]
+        public IActionResult DeleteImages(int id)
+        {
+            return View(new DeleteImageRequest()
+            {
+                Id = id
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteImages(DeleteImageRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.DeleteImage(request);
+            if (result.IsSuccessed)
+            {
+                //thông báo Action result cho trang Index
+                TempData["result"] = "Xóa thành công";
+
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImageDetails(int id)
+        {
+            var result = await _productApiClient.GetImageById(id);
+            return View(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SetImage(int productId)
+        {
+            var setImageRequest = await GetSetImageRequest(productId);
+            return View(setImageRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetImage(SetDefaultImageRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.SetImage(request.ProductId, request);
+
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            var setImageRequest = await GetSetImageRequest(request.ProductId);
+
+            return View(setImageRequest);
+        }
+
+        private async Task<SetDefaultImageRequest> GetSetImageRequest(int productId)
+        {
+            var listImage = await _productApiClient.GetListImages(productId);
+            var setDefaultImageRequest = new SetDefaultImageRequest();
+            foreach (var images in listImage)
+            {
+                setDefaultImageRequest.Images.Add(new SelectItem()
+                {
+                    Id = images.Id.ToString(),
+                    Name = images.ImagePath,
+                    Selected = images.IsDefault
+                });
+            }
+            return setDefaultImageRequest;
         }
     }
 }

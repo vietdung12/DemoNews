@@ -13,6 +13,7 @@ namespace News.ViewModel.Catalog.Product
             RuleFor(x => x.Local).NotEmpty().WithMessage("Khu vực không được bỏ trống");
             RuleFor(x => x.Description).NotEmpty().WithMessage("Mô tả không được bỏ trống").MaximumLength(500).WithMessage("Mô tả không được vượt quá 200 kí tự");
             RuleFor(x => x.Price).NotEmpty().WithMessage("Giá bán không được bỏ trống");
+            RuleFor(x => x.Image).NotEmpty().WithMessage("Hinh ảnh không được bỏ trống");
         }
     }
 }

@@ -20,5 +20,6 @@ namespace News.ServiceApiClient
         Task<ImageVM> GetImageById(int id);
         Task<ApiResult<bool>> AddImage(AddImageRequest request);
         Task<ApiResult<bool>> DeleteImage(DeleteImageRequest request);
+        Task<ApiResult<bool>> SetImage(int productId, SetDefaultImageRequest request);
     }
 }

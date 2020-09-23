@@ -121,5 +121,17 @@ namespace News.Api.Controllers
             var resut = await _newsService.DeleteImage(id);
             return Ok(resut);
         }
+
+        [HttpPut("image/{productId}")]
+        public async Task<ActionResult> SetDefaultImage(int productId, SetDefaultImageRequest requestModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var resut = await _newsService.SetImage(productId, requestModel);
+            return Ok(resut);
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace News.Api.Profiles
             CreateMap<Register, RegisterViewModel>();
             CreateMap<CreateRegisterRequest, Register>();
 
-            CreateMap<Image, ImageVM>();
+            CreateMap<Image, ImageVM>();          
         }
     }
 }
