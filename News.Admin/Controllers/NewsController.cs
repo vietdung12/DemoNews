@@ -213,33 +213,7 @@ namespace News.Admin.Controllers
 
         [HttpGet]
         public async Task<IActionResult> SetImage(int productId)
-        {
-            var setImageRequest = await GetSetImageRequest(productId);
-            return View(setImageRequest);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SetImage(SetDefaultImageRequest request)
-        {
-            if (!ModelState.IsValid)
-                return View();
-
-            var result = await _productApiClient.SetImage(request.ProductId, request);
-
-            if (result.IsSuccessed)
-            {
-                TempData["result"] = "Cập nhật thành công";
-                return RedirectToAction("Index");
-            }
-
-            ModelState.AddModelError("", result.Message);
-            var setImageRequest = await GetSetImageRequest(request.ProductId);
-
-            return View(setImageRequest);
-        }
-
-        private async Task<SetDefaultImageRequest> GetSetImageRequest(int productId)
-        {
+        {           
             var listImage = await _productApiClient.GetListImages(productId);
             var setDefaultImageRequest = new SetDefaultImageRequest();
             foreach (var images in listImage)
@@ -251,7 +225,34 @@ namespace News.Admin.Controllers
                     Selected = images.IsDefault
                 });
             }
-            return setDefaultImageRequest;
+            return View(setDefaultImageRequest);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SetImage(SetDefaultImageRequest request)
+        {
+            if(!ModelState.IsValid)
+                return View();
+
+            foreach(var image in request.Images) 
+            { 
+                if(image.Selected == true) 
+                {
+                    var result = await _productApiClient.SetImage(request.ProductId, request);
+
+                    if (result.IsSuccessed)
+                    {
+                        TempData["result"] = "Cập nhật thành công";
+                        return RedirectToAction("Index");
+                    }
+
+                    ModelState.AddModelError("", result.Message);                    
+                    return View(request);
+                }
+            }
+            ModelState.AddModelError("", "Phải có 1 hình default");
+            return View(request);
+        }
+        
     }
 }
