@@ -4,6 +4,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts{
+    <script type="text/javascript">
+        function CheckOnlyOneCheckBox(checkbox) {
+            var checkBoxList = checkbox.parentNode.parentNode.parentNode;
+            var list = checkBoxList.getElementsByTagName("input");
+            for (var i = 0; i < list.length; i++) {
+                if (list[i] != checkbox && checkbox.checked) {
+                    list[i].checked = false;
+                }
+            }
+        }
+    </script>
+}
+
 <h1>SetImage</h1>
 <hr />
 <div class="row">
@@ -16,7 +30,7 @@
                 <div class="form-group">
                     <label>
                         <img src="https://localhost:5001/user-content/@Model.Images[i].Name" width="60" height="60">
-                        <input type="checkbox" asp-for="Images[i].Selected" />
+                        <input type="checkbox" asp-for="Images[i].Selected" onclick="CheckOnlyOneCheckBox(this)"/>
                         <input type="hidden" asp-for="Images[i].Id" />
                         <input type="hidden" asp-for="Images[i].Name" />
                     </label>
