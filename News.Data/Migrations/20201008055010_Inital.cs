@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace News.Data.Migrations
 {
-    public partial class identity : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -119,6 +119,94 @@ namespace News.Data.Migrations
                 {
                     table.PrimaryKey("PK_AppUserTokens", x => x.UserId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(maxLength: 200, nullable: false),
+                    Local = table.Column<string>(maxLength: 200, nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    Price = table.Column<string>(maxLength: 100, nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<bool>(nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Registers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    Email = table.Column<string>(maxLength: 200, nullable: true),
+                    Telephone = table.Column<string>(maxLength: 200, nullable: false),
+                    IdProduct = table.Column<int>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Registers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ImagePath = table.Column<string>(maxLength: 200, nullable: false),
+                    Caption = table.Column<string>(maxLength: 200, nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    IsDefault = table.Column<bool>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"), "ddfc8e67-3ee6-4185-9a8d-2cfb039ac61e", "Administrator role", "admin", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"), new Guid("8d04dce2-969a-435d-bba4-df3f325983dc") });
+
+            migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DoB", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"), 0, "72aea333-ca24-4190-9b66-2d586cc80bb1", new DateTime(1997, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "luongvietdung1212@gmail.com", true, "Dung", "Luong", false, null, "luongvietdung1212@gmail.com", "admin", "AQAAAAEAACcQAAAAEHa1cQi31rxG3nQ1jr03FpUFLpnxL1r6nv+oPRvnGsbUq2cOZ5nsbCUkbWG9uIGF/w==", null, false, "", false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "DateCreated", "Description", "Local", "Price", "Status", "Title" },
+                values: new object[] { 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "gần chợ, gần trường", "quận 9", "20tr/m2", true, "bán đất nền q9" });
+
+            migrationBuilder.InsertData(
+                table: "Images",
+                columns: new[] { "Id", "Caption", "DateCreated", "ImagePath", "IsDefault", "ProductId" },
+                values: new object[] { 1, "hinh1", new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "0bf08e07060b.jpg", true, 1 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ProductId",
+                table: "Images",
+                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -143,6 +231,15 @@ namespace News.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Registers");
+
+            migrationBuilder.DropTable(
+                name: "Products");
         }
     }
 }

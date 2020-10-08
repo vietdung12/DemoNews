@@ -92,6 +92,13 @@ namespace News.Data.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("AppUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -137,6 +144,16 @@ namespace News.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
+                            ConcurrencyStamp = "ddfc8e67-3ee6-4185-9a8d-2cfb039ac61e",
+                            Description = "Administrator role",
+                            Name = "admin",
+                            NormalizedName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("News.Data.Entities.AppUser", b =>
@@ -203,6 +220,27 @@ namespace News.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "72aea333-ca24-4190-9b66-2d586cc80bb1",
+                            DoB = new DateTime(1997, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "luongvietdung1212@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Dung",
+                            LastName = "Luong",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "luongvietdung1212@gmail.com",
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHa1cQi31rxG3nQ1jr03FpUFLpnxL1r6nv+oPRvnGsbUq2cOZ5nsbCUkbWG9uIGF/w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("News.Data.Entities.Image", b =>
@@ -238,6 +276,17 @@ namespace News.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Images");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Caption = "hinh1",
+                            DateCreated = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ImagePath = "0bf08e07060b.jpg",
+                            IsDefault = true,
+                            ProductId = 1
+                        });
                 });
 
             modelBuilder.Entity("News.Data.Entities.Product", b =>
@@ -279,6 +328,18 @@ namespace News.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateCreated = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "gần chợ, gần trường",
+                            Local = "quận 9",
+                            Price = "20tr/m2",
+                            Status = true,
+                            Title = "bán đất nền q9"
+                        });
                 });
 
             modelBuilder.Entity("News.Data.Entities.Register", b =>

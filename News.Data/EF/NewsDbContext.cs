@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using News.Data.Configurations;
 using News.Data.Entities;
+using News.Data.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,6 +31,8 @@ namespace News.Data.EF
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+
+            modelBuilder.Seed();
         }
 
         public DbSet<Product> Products { get; set; }
